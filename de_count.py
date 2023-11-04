@@ -25,7 +25,7 @@ def z_score_norm(x):
     normalized_data = (x - mean) / std  # 归一化计算
     return normalized_data
 
-def deCount(each_cost, total_pay, norm_type="l2_norm"):
+def de_count(each_cost, total_pay, norm_type="l2_norm"):
     """
     计算每个人应付的钱.
     差距较小用 l2_norm
@@ -55,26 +55,26 @@ def deCount(each_cost, total_pay, norm_type="l2_norm"):
 # predict_cost: [33.94, 23.21, 21.11, 10.95, 10.79]
 # each_cost = [42.2, 16.6, 10.2, -34, -35]
 # total_pay = 100
-# final_cost = deCount(each_cost, total_pay, "l2_norm")
+# final_cost = de_count(each_cost, total_pay, "l2_norm")
 
 # 2
 # gold_cost: [80, 30, 15, 12, 9, 6, 3]
 # predict_cost: [93.94, 15.74, 7.78, 7.48, 5.97, 4.62, 4.16]
 # each_cost = [157.5, 37.4, -10, -12.6, -27.8, -45, -52]
 # total_pay = 139.7
-# final_cost = deCount(each_cost, total_pay, "z_score_norm")
+# final_cost = de_count(each_cost, total_pay, "z_score_norm")
 
 # 3
 # gold_cost: [56, 46, 36, 26, 16]
 # predict_cost: [65.4, 46.32, 25.63, 23.0, 20.75]
 # each_cost = [63.5, 30, -27.5, -38, -48]
 # total_pay = 181.1
-# final_cost = deCount(each_cost, total_pay, "l2_norm")
+# final_cost = de_count(each_cost, total_pay, "l2_norm")
 
 # 4
 # gold_cost: [80, 30, 7, 4.1, 0]
 # predict_cost: [71.4, 24.94, 11.02, 10.17, 3.57]
 each_cost = [121.8, 40.3, -23, -29.2, -110.4]
 total_pay = 121.1
-final_cost = deCount(each_cost, total_pay, "z_score_norm")
+final_cost = de_count(each_cost, total_pay, "z_score_norm")
 
