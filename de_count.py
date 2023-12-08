@@ -25,7 +25,7 @@ def z_score_norm(x):
     normalized_data = (x - mean) / std  # 归一化计算
     return normalized_data
 
-def de_count(each_cost, total_pay, norm_type="l2_norm"):
+def de_count(each_cost, total_pay):
     """
     计算每个人应付的钱.
     差距较小用 l2_norm
@@ -33,21 +33,32 @@ def de_count(each_cost, total_pay, norm_type="l2_norm"):
     无法免除最后一人的支出，若需免除，输入直接去除该人即可。
 
     Args:
-        each_cost (list): 每个人赢钱数额.
+        each_cost (dict): 每个人赢钱数额.
         total_pay (int): 需要分摊的饮料钱.
     """
-    each_cost = np.array(each_cost)
+    norm_type = "z_score_norm" if max(each_cost.values()) - min(each_cost.values()) >= 200 else "l2_norm"
+    each_cost_sorted = sorted(each_cost.items(), key = lambda x:-x[1])
+    each_cost_name = [name_cost[0] for name_cost in each_cost_sorted]
+    each_cost_value = [name_cost[1] for name_cost in each_cost_sorted]
+    each_cost_value = np.array(each_cost_value)
     if norm_type == "min_max_norm":
-        cost_rate = min_max_norm(each_cost)
+        cost_rate = min_max_norm(each_cost_value)
     elif norm_type == "z_score_norm":
-        cost_rate = z_score_norm(each_cost)
+        cost_rate = z_score_norm(each_cost_value)
     elif norm_type == "l2_norm":
-        cost_rate = l2_norm(each_cost)
-    print("cost_rate:{}".format([round(x,2) for x in cost_rate]))
+        cost_rate = l2_norm(each_cost_value)
+    # print("cost_rate:{}".format([round(x,2) for x in cost_rate]))
     cost_rate = softmax(cost_rate)
     final_cost = total_pay * cost_rate
-    print("should_pay:{}".format([round(x,2) for x in final_cost]))
-    print("final_record:{}".format([round(x,2) for x in (each_cost - final_cost)]))
+    final_record = [round(x,2) for x in (each_cost_value - final_cost)]
+    final_cost = [round(x,2) for x in final_cost]
+    print("milk_tea: {}".format(total_pay))
+    print("---should_pay---")
+    for i in range(len(final_cost)):
+        print("{}:{}".format(each_cost_name[i],final_cost[i]))
+    print("---final_record---")
+    for i in range(len(final_record)):
+        print("{}:{}".format(each_cost_name[i],final_record[i]))
     return final_cost
 
 # 1
@@ -74,7 +85,19 @@ def de_count(each_cost, total_pay, norm_type="l2_norm"):
 # 4
 # gold_cost: [80, 30, 7, 4.1, 0]
 # predict_cost: [71.4, 24.94, 11.02, 10.17, 3.57]
-each_cost = [121.8, 40.3, -23, -29.2, -110.4]
-total_pay = 121.1
-final_cost = de_count(each_cost, total_pay, "z_score_norm")
+# each_cost = [121.8, 40.3, -23, -29.2, -110.4]
+# total_pay = 121.1
+# final_cost = de_count(each_cost, total_pay, "z_score_norm")
+
+# total_pay = 119.8
+# player_cost = {
+#     "柴": 30.5,
+#     "万":20,
+#     "才": -0.8,
+#     "杰": -15.8,
+#     "鸭": -41.9
+# }
+# l2_norm
+
+final_pay = de_count(player_cost, total_pay)
 
